@@ -2,18 +2,27 @@ package com.example;
 import java.util.Scanner;
 
 public class App {
+    //ANSI color codes     https://www.w3schools.blog/ansi-colors-java#google_vignette 
+    private static final String blue = "\u001B[34m";
+    private static final String green = "\u001B[32m";
+    private static final String red = "\u001B[31m";
+    private static final String yellow = "\u001B[33m";
+    private static final String reset = "\u001B[0m"; // Resets colors
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean keepRunning = true;
-        System.out.println("Welcome to the Stock Market Data App!");
+
+        System.out.println("\n══════════════════════════════════════");
+        System.out.println(blue + "        STOCK MARKET DATA APP            " + reset);
+        System.out.println("══════════════════════════════════════");
 
         while (keepRunning) {
-            // Display menu options
-            System.out.println("\nSelect an option:");
-            System.out.println("1. Check stock value");
-            System.out.println("2. Compare two stocks");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice: ");
+            System.out.println("\n"+"Select an option:");
+            System.out.println(green + "1 Check stock value" + reset);
+            System.out.println(yellow + "2 Compare two stocks" + reset);
+            System.out.println(red + "3 Exit" + reset);
+            System.out.println("Enter your choice: ");
 
             String choice = scanner.nextLine().trim();
 
@@ -23,9 +32,9 @@ public class App {
                 compareStocks(scanner);
             } else if (choice.equals("3")) {
                 keepRunning = false;
-                System.out.println("\nThank you for using the Stock Market Data App! 📈");
+                System.out.println(green + "Thank you for using the Stock Market Data App! 💷" + reset);
             } else {
-                System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                System.out.println(red + "Invalid choice. Please enter 1, 2, or 3." + reset);
             }
         }
 
@@ -33,20 +42,19 @@ public class App {
     }
 
     private static void checkStock(Scanner scanner) {
-        System.out.print("Enter a stock ticker (e.g., IBM, AAPL, TSLA): ");
+        System.out.print("\nEnter a stock ticker (e.g., AAPL, TSLA, MSFT): ");
         String stockSymbol = scanner.nextLine().toUpperCase();
 
         try {
             String jsonData = API.getData(stockSymbol);
             Stock stock = StockDataParser.extractStockData(jsonData);
-            System.out.println("\nStock Information Retrieved Successfully:\n");
-            System.out.println("________________________________");
-            System.out.println("📊 Here are the results for: " + stockSymbol);
-            System.out.println("________________________________");
+            System.out.println("\n══════════════════════════════════════");
+            System.out.println(green + " Stock Information: " + stockSymbol + reset);
+            System.out.println("══════════════════════════════════════");
             System.out.println(stock);
-            System.out.println("________________________________");
+            System.out.println("══════════════════════════════════════\n");
         } catch (Exception e) {
-            System.out.println("Error retrieving stock data: " + e.getMessage());
+            System.out.println(red + "Error retrieving stock data: " + e.getMessage() + reset);
         }
     }
 
@@ -60,32 +68,38 @@ public class App {
             Stock stock1 = StockDataParser.extractStockData(API.getData(stock1Symbol));
             Stock stock2 = StockDataParser.extractStockData(API.getData(stock2Symbol));
 
-            System.out.println("________________________________");
-            System.out.println("| Stock Comparison: |");
-            System.out.println("________________________________");
-            System.out.println("Here are the results for: "+ stock1Symbol + "\n"+ stock1);
-            System.out.println("________________________________");
-            System.out.println("\nComparing with:");
-            System.out.println("________________________________");
-            System.out.println("Here are the results for: "+ stock2Symbol+ "\n"+ stock2);
-            System.out.println("________________________________");
+            System.out.println("\n══════════════════════════════════════");
+            System.out.println(blue + "      STOCK COMPARISON RESULTS      " + reset);
+            System.out.println("══════════════════════════════════════");
+
+            System.out.println("\n Comparing: " + stock1Symbol + " vs. " + stock2Symbol);
+
+            System.out.println("\n Stock 1: " + stock1Symbol);
+            System.out.println("══════════════════════════════════════");
+            System.out.println(stock1);
+            System.out.println("══════════════════════════════════════");
+
+            System.out.println("\n Stock 2: " + stock2Symbol);
+            System.out.println("══════════════════════════════════════");
+            System.out.println(stock2);
+            System.out.println("══════════════════════════════════════");
 
             double percentageDifference = Math.abs(stock1.getChangePercentage() - stock2.getChangePercentage());
-            System.out.println("Difference in percentage change between both: " + percentageDifference + "%");
-            System.out.println("________________________________");
+            System.out.println("\n " + yellow + "Difference in percentage change: " + percentageDifference + "%" + reset);
+            System.out.println("══════════════════════════════════════");
 
             //Investment Recommendation Between Two Stocks
-            System.out.println("\nInvestment Recommendation:");
+            System.out.println(green + "Investment Recommendation:" + reset);
             if (stock1.getChangePercentage() > stock2.getChangePercentage()) {
-                System.out.println(stock1Symbol + " is performing better as an investment.");
+                System.out.println(stock1Symbol + " is the better investment.");
             } else if (stock2.getChangePercentage() > stock1.getChangePercentage()) {
-                System.out.println(stock2Symbol + " is performing better as an investment.");
+                System.out.println(stock2Symbol + " is the better investment.");
             } else {
-                System.out.println("Both stocks have similar performance. Research further before investing.");
+                System.out.println(yellow + "Both stocks have similar performance. Research further before investing." + reset);
             }
-            System.out.println("________________________________");
+            System.out.println("══════════════════════════════════════\n");
         } catch (Exception e) {
-            System.out.println("Error retrieving stock data: " + e.getMessage());
+            System.out.println("\n " + red + "Error retrieving stock data: " + e.getMessage() + reset);
         }
     }
 }
